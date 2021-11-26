@@ -31,6 +31,16 @@ public class DonacionService {
     }
 
     /**
+     * Metodo que permite obtener una donación mediante su ID
+     * @param donacion Objeto Donación a buscar
+     * @return Objeto DonacionModel
+     */
+    public DonacionModel buscar(DonacionModel donacion){
+        return this.donacionRepository.findById(donacion.getId()).get();
+    }
+
+
+    /**
      * Metodo que permite crear una donación.
      * @param donacion Objeto DonacionModel
      */

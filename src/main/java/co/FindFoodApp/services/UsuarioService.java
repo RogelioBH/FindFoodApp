@@ -1,9 +1,14 @@
 package co.FindFoodApp.services;
 
+import co.FindFoodApp.models.BeneficiarioModel;
+import co.FindFoodApp.models.DonanteModel;
 import co.FindFoodApp.models.UsuarioModel;
 import co.FindFoodApp.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -16,6 +21,45 @@ public class UsuarioService {
 
     @Autowired
     BeneficiarioService beneficiarioService;
+
+    /**
+     * Metodo que permite listar todos los usuarios del sistema.
+     * @return Lista de UsuarioModel
+     */
+    public List<UsuarioModel> listar(){
+        List<DonanteModel> donantes = donanteService.listar();
+        List<BeneficiarioModel> beneficiarios = beneficiarioService.listar();
+        List<UsuarioModel> usuarioModels = usuarioRepository.findAll();
+        List<UsuarioModel> usuarios = new ArrayList<>();
+
+        for (UsuarioModel user:usuarioModels) {
+            for (DonanteModel donante : donantes) {
+                if (donante.getUsuario().equals(user.getUsername())){
+                    UsuarioModel userList = new UsuarioModel();
+                    userList.setId(user.getId());
+                    userList.setUsername(user.getUsername());
+                    userList.setRol(user.getRol());
+                    userList.setNombre(donante.getNombre());
+                    userList.setCorreo(donante.getCorreo());
+                    userList.setTelefono(donante.getTelefono());
+                    usuarios.add(userList);
+                }
+            }
+            for (BeneficiarioModel beneficiario : beneficiarios) {
+                if (beneficiario.getUsuario().equals(user.getUsername())){
+                    UsuarioModel userList = new UsuarioModel();
+                    userList.setId(user.getId());
+                    userList.setUsername(user.getUsername());
+                    userList.setRol(user.getRol());
+                    userList.setNombre(beneficiario.getNombre());
+                    userList.setCorreo(beneficiario.getCorreo());
+                    userList.setTelefono(beneficiario.getTelefono());
+                    usuarios.add(userList);
+                }
+            }
+        }
+        return usuarios;
+    }
 
     /**
      * Metodo que permito encontrar un usuario por el username
@@ -31,7 +75,7 @@ public class UsuarioService {
      * Metodo que permite guardar un usuario
      * @param usuario Objeto UsuarioModel
      */
-    public void craar(UsuarioModel usuario){
+    public void crear(UsuarioModel usuario){
         switch (usuario.getRol()){
             case "Donante":
                 this.donanteService.crear(usuario);
