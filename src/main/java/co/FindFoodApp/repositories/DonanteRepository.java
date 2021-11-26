@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DonanteRepository extends MongoRepository<DonanteModel,String> {
-//    Pendiente definir metodos de consulta
+
+    DonanteModel findByUsuario(String usuario);
+
 }
