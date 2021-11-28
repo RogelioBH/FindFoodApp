@@ -76,12 +76,14 @@ public class UsuarioService {
      * @param usuario Objeto UsuarioModel
      */
     public void crear(UsuarioModel usuario){
-        switch (usuario.getRol()){
-            case "Donante":
-                this.donanteService.crear(usuario);
-            case  "Beneficiario":
-                this.beneficiarioService.crear(usuario);
+        if(usuario.getRol().equals("Donante")){
+            this.donanteService.crear(usuario);
+        }else if(usuario.getRol().equals("Beneficiario")){
+            this.beneficiarioService.crear(usuario);
+        }else{
+            System.out.println("Erro en el rol");
         }
+
         UsuarioModel usuarioModel = new UsuarioModel();
         usuarioModel.setUsername(usuario.getUsername());
         usuarioModel.setPassword(usuario.getPassword());
@@ -94,11 +96,12 @@ public class UsuarioService {
      * @param usuario Objeto UsuarioModel
      */
     public void actualizar(UsuarioModel usuario){
-        switch (usuario.getRol()){
-            case "Donante":
-                this.donanteService.actualizar(usuario);
-            case  "Beneficiario":
-                this.beneficiarioService.actualizar(usuario);
+        if(usuario.getRol().equals("Donante")){
+            this.donanteService.actualizar(usuario);
+        }else if(usuario.getRol().equals("Beneficiario")){
+            this.beneficiarioService.actualizar(usuario);
+        }else{
+            System.out.println("Erro en el rol");
         }
         UsuarioModel usuarioModel = this.usuarioRepository.findById(usuario.getId()).get();
         usuarioModel.setId(usuarioModel.getId());
@@ -113,11 +116,12 @@ public class UsuarioService {
      * @param usuario Objeto UsuarioModel
      */
     public void borrar(UsuarioModel usuario){
-        switch (usuario.getRol()){
-            case "Donante":
-                this.donanteService.borrar(usuario);
-            case  "Beneficiario":
-                this.beneficiarioService.borrar(usuario);
+        if(usuario.getRol().equals("Donante")){
+            this.donanteService.borrar(usuario);
+        }else if(usuario.getRol().equals("Beneficiario")){
+            this.beneficiarioService.borrar(usuario);
+        }else{
+            System.out.println("Erro en el rol");
         }
         UsuarioModel usuarioModel = this.usuarioRepository.findById(usuario.getId()).get();
         this.usuarioRepository.delete(usuarioModel);

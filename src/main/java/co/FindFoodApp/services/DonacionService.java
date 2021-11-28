@@ -1,5 +1,6 @@
 package co.FindFoodApp.services;
 
+import co.FindFoodApp.enums.EstadoDonacion;
 import co.FindFoodApp.models.DonacionModel;
 import co.FindFoodApp.models.DonanteModel;
 import co.FindFoodApp.models.UsuarioModel;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DonacionService {
@@ -63,4 +65,17 @@ public class DonacionService {
     public void borrar(DonacionModel donacion){
         this.donacionRepository.delete(donacion);
     }
+
+    /**
+     * Metodo que permite a un usuario beneficiario seleccionar una donación disponible
+     * @param donacion Objeto Donacion que incluye el beneficiario
+     */
+    public void seleccionarDonacion(DonacionModel donacion){
+        Optional<DonacionModel> donacionModel = this.donacionRepository.findById(donacion.getId());
+        if (donacionModel.get().getEstado().equals("Disponible")){
+            donacion.setEstado(EstadoDonacion.SELECCIONADA.getNombre());
+            this.donacionRepository.save(donacion);
+        }
+    }
+
 }

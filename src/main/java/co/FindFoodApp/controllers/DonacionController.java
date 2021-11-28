@@ -37,10 +37,7 @@ public class DonacionController {
 
 
     @GetMapping("/donaciones")
-    public ResponseEntity<Map<String, List<DonacionModel>>> listar(Errors error) {
-        if (error.hasErrors()) {
-            throwError(error);
-        }
+    public ResponseEntity<Map<String, List<DonacionModel>>> listar() {
         Map<String, List<DonacionModel>> respuesta = new HashMap<>();
         respuesta.put("donaciones", this.donacionService.listar());
         return ResponseEntity.ok(respuesta);
@@ -76,7 +73,7 @@ public class DonacionController {
             this.donacionService.actualizar(donacionSave);
             respuesta.put("mensaje", "Se actualizo la donacion No. "+donacionSave.getId()+" correctamente");
         } else {
-            respuesta.put("mensaje", "El usuario "+donacionSave.getId()+" no se encuentra registrado");
+            respuesta.put("mensaje", "La donacion No. "+donacionSave.getId()+" no se encuentra registrado");
         }
         return ResponseEntity.ok(respuesta);
     }
@@ -92,6 +89,23 @@ public class DonacionController {
         if (donacionSave.getId() != null) {
             this.donacionService.borrar(donacionSave);
             respuesta.put("mensaje", "Se elimino la donacion No. "+donacionSave.getId()+" correctamente");
+        } else {
+            respuesta.put("mensaje", "La donación No. "+donacionSave.getId()+" no se encuentra registrado");
+        }
+        return ResponseEntity.ok(respuesta);
+    }
+
+    @PutMapping("/donacion/select")
+    public ResponseEntity<Map<String, String>> seleccionar(@Valid @RequestBody DonacionModel donacion, Errors error) {
+        if (error.hasErrors()) {
+            throwError(error);
+        }
+        Map<String, String> respuesta = new HashMap<>();
+        DonacionModel donacionSave = this.donacionService.buscar(donacion);
+
+        if (donacionSave.getId() != null) {
+            this.donacionService.seleccionarDonacion(donacion);
+            respuesta.put("mensaje", "Se asigno la donacion No. "+donacionSave.getId()+" correctamente");
         } else {
             respuesta.put("mensaje", "El usuario "+donacionSave.getId()+" no se encuentra registrado");
         }

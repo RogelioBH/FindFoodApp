@@ -27,10 +27,7 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @GetMapping("/usuarios")
-    public ResponseEntity<Map<String, List<UsuarioModel>>> listar(Errors error) {
-        if (error.hasErrors()) {
-            throwError(error);
-        }
+    public ResponseEntity<Map<String, List<UsuarioModel>>> listar() {
         Map<String, List<UsuarioModel>> respuesta = new HashMap<>();
         respuesta.put("usuarios", this.usuarioService.listar());
         return ResponseEntity.ok(respuesta);
@@ -46,8 +43,8 @@ public class UsuarioController {
         UsuarioModel usuarioSave = this.usuarioService.buscarPorNombreUsuario(usuario.getUsername());
 
         if (usuarioSave.getId() == null) {
-            this.usuarioService.crear(usuarioSave);
-            respuesta.put("mensaje", "Se resgistro el usuario "+usuarioSave.getUsername()+" correctamente");
+            this.usuarioService.crear(usuario);
+            respuesta.put("mensaje", "Se resgistro el usuario "+usuario.getUsername()+" correctamente");
         } else {
             respuesta.put("mensaje", "El usuario "+usuarioSave.getUsername()+" ya se encuentra registrado");
         }
@@ -66,8 +63,8 @@ public class UsuarioController {
         UsuarioModel usuarioSave = this.usuarioService.buscarPorNombreUsuario(usuario.getUsername());
 
         if (usuarioSave.getId() != null) {
-            this.usuarioService.actualizar(usuarioSave);
-            respuesta.put("mensaje", "Se actualizo el usuario "+usuarioSave.getUsername()+" correctamente");
+            this.usuarioService.actualizar(usuario);
+            respuesta.put("mensaje", "Se actualizo el usuario "+usuario.getUsername()+" correctamente");
         } else {
             respuesta.put("mensaje", "El usuario "+usuarioSave.getUsername()+" no se encuentra registrado");
         }

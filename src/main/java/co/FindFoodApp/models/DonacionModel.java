@@ -9,14 +9,14 @@ public class DonacionModel {
     @Id
     private String id;
 
-    private DonanteModel donante;
-    private BeneficiarioModel Beneficiario;
+    private String donante;
+    private String beneficiario;
 
     private String fecha;
     private String descripcion;
 
     // Disponible, Seleccionada, Finalizada
-    private Boolean estado;
+    private String estado;
 
     public DonacionModel() {
     }
@@ -29,20 +29,20 @@ public class DonacionModel {
         this.id = id;
     }
 
-    public DonanteModel getDonante() {
+    public String getDonante() {
         return donante;
     }
 
-    public void setDonante(DonanteModel donante) {
+    public void setDonante(String donante) {
         this.donante = donante;
     }
 
-    public BeneficiarioModel getBeneficiario() {
-        return Beneficiario;
+    public String getBeneficiario() {
+        return beneficiario;
     }
 
-    public void setBeneficiario(BeneficiarioModel beneficiario) {
-        Beneficiario = beneficiario;
+    public void setBeneficiario(String beneficiario) {
+        this.beneficiario = beneficiario;
     }
 
     public String getFecha() {
@@ -61,11 +61,11 @@ public class DonacionModel {
         this.descripcion = descripcion;
     }
 
-    public Boolean getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(Boolean estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 }
