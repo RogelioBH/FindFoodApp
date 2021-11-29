@@ -29,13 +29,6 @@ public class DonacionController {
     @Autowired
     DonacionService donacionService;
 
-    @Autowired
-    DonanteService donanteService;
-
-    @Autowired
-    BeneficiarioService beneficiarioService;
-
-
     @GetMapping("/donaciones")
     public ResponseEntity<Map<String, List<DonacionModel>>> listar() {
         Map<String, List<DonacionModel>> respuesta = new HashMap<>();
@@ -107,8 +100,15 @@ public class DonacionController {
             this.donacionService.seleccionarDonacion(donacion);
             respuesta.put("mensaje", "Se asigno la donacion No. "+donacionSave.getId()+" correctamente");
         } else {
-            respuesta.put("mensaje", "El usuario "+donacionSave.getId()+" no se encuentra registrado");
+            respuesta.put("mensaje", "La Donación No. "+donacionSave.getId()+" no existe");
         }
+        return ResponseEntity.ok(respuesta);
+    }
+
+    @GetMapping(value = "/donaciones/estado",params = "estado")
+    public ResponseEntity<Map<String, List<DonacionModel>>> listar(@RequestParam(defaultValue = "Disponible", required = true) String estado) {
+        Map<String, List<DonacionModel>> respuesta = new HashMap<>();
+        respuesta.put("donaciones", this.donacionService.listarEstado(estado));
         return ResponseEntity.ok(respuesta);
     }
 

@@ -9,6 +9,7 @@ import co.FindFoodApp.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,19 @@ public class DonacionService {
      */
     public DonacionModel buscar(DonacionModel donacion){
         return this.donacionRepository.findById(donacion.getId()).get();
+    }
+
+    /**
+     * Metodo que permite listar la donaciones existente por su estado.
+     * @param estado Estado de la donación.
+     * @return Lista de donaciones.
+     */
+    public List<DonacionModel> listarEstado(String estado){
+        if (estado != null){
+            return this.donacionRepository.findAllByEstado(estado);
+        }else{
+            return null;
+        }
     }
 
 
