@@ -1,8 +1,10 @@
 package co.FindFoodApp.controllers;
 
+import co.FindFoodApp.dto.UsuarioDTO;
 import co.FindFoodApp.exceptions.CustomException;
 import co.FindFoodApp.models.UsuarioModel;
 import co.FindFoodApp.services.UsuarioService;
+import co.FindFoodApp.utils.Autentication;
 import co.FindFoodApp.utils.Autorizacion;
 import co.FindFoodApp.utils.BCrypt;
 import io.jsonwebtoken.Jwts;
@@ -33,7 +35,7 @@ public class UsuarioController {
         return ResponseEntity.ok(respuesta);
     }
 
-    @PostMapping("/usuario")
+    @PostMapping("/user")
     public ResponseEntity<Map<String, String>> guardar(@Valid @RequestBody UsuarioModel usuario, Errors error) {
         if (error.hasErrors()) {
             throwError(error);
@@ -88,8 +90,8 @@ public class UsuarioController {
         return ResponseEntity.ok(respuesta);
     }
 
-    @PostMapping("/usuarios/login")
-    public ResponseEntity<UsuarioModel> login(@RequestBody UsuarioModel usuario){
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioDTO> login(@RequestBody UsuarioModel usuario){
         UsuarioModel usuarioModel=this.usuarioService.buscarPorNombreUsuario(usuario.getUsername());
         if(usuarioModel.getUsername()==null){
             throw new CustomException("Usuario o contraseña incorrectos");
@@ -98,22 +100,7 @@ public class UsuarioController {
         if(!BCrypt.checkpw(usuario.getPassword(), usuarioModel.getPassword())){
             throw new CustomException("Usuario o contraseña incorrectos");
         }
-
-        String hash="";
-        long tiempo = System.currentTimeMillis();
-        if(usuarioModel.getId()!=""){
-            hash= Jwts.builder()
-                    .signWith(SignatureAlgorithm.HS256, Autorizacion.KEY)
-                    .setSubject(usuarioModel.getNombre())
-                    .setIssuedAt(new Date(tiempo))
-                    .setExpiration(new Date(tiempo+9000000))
-                    .claim("username", usuarioModel.getUsername())
-                    .claim("correo", usuarioModel.getCorreo())
-                    .compact();
-        }
-
-        usuarioModel.setHash(hash);
-        return ResponseEntity.ok(usuarioModel);
+        return ResponseEntity.ok(new Autentication().autenticacion(usuarioModel));
 
     }
 
