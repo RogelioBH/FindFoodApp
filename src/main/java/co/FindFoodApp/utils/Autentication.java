@@ -18,9 +18,9 @@ public class Autentication {
                     .signWith(SignatureAlgorithm.HS256, Autorizacion.KEY)
                     .setSubject(usuarioModel.getNombre())
                     .setIssuedAt(new Date(tiempo))
-                    .setExpiration(new Date(tiempo+600))
+                    .setExpiration(new Date(tiempo+9000000))
                     .claim("username", usuarioModel.getUsername())
-                    .claim("password", usuarioModel.getPassword())
+                    .claim("rol", usuarioModel.getRol())
                     .compact();
         }
         return new UsuarioDTO().getUsuarioLogin(usuarioModel,hash);

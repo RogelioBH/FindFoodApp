@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/app")
 public class UsuarioController {
 
@@ -114,5 +115,15 @@ public class UsuarioController {
             message += String.format("Parametro: %s - Mensaje: %s", e.getObjectName(), e.getDefaultMessage());
         }
         throw new CustomException(message);
+    }
+
+    /**
+     * Método para realizar la comprobación del token
+     */
+    @GetMapping("/verificar") //Ruta para acceder al método
+    public ResponseEntity<Map<String, Boolean>> validarToken(){ //Retorna un Boolean
+        Map<String, Boolean> respuesta=new HashMap<>();
+        respuesta.put("ok",true); // Agrego la respuesta al MAP
+        return ResponseEntity.ok(respuesta);
     }
 }

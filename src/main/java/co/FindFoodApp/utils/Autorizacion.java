@@ -19,7 +19,7 @@ public class Autorizacion implements Filter{
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-       
+                String hash= "";
                 HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
@@ -27,10 +27,10 @@ public class Autorizacion implements Filter{
                 httpServletResponse.setHeader("Access-Control-Allow-Headers","Authorization, Content-Type");
 
                 String url = httpServletRequest.getRequestURI();
-                if(url.contains("/app/login")||url.contains("/app/user") || url.contains(".js")|| url.contains(".css")|| url.contains(".ico")|| url.contains("assets")){
+                if(url.contains("/app/login")||url.contains("/app/user") || url.contains(".js")|| url.contains(".css")|| url.contains(".ico")|| url.contains("assets") || url.contains("#")){
                     chain.doFilter(request, response);
                 }else{
-                    String hash = httpServletRequest.getHeader("Authorization");
+                    hash = httpServletRequest.getHeader("Authorization");
                     if(hash==null || hash.trim().equals("")){
                         response.setContentType("application/json");
                         String body= "{\"autorizacion \":\"NO\"}";
@@ -39,9 +39,7 @@ public class Autorizacion implements Filter{
 
                     try {
                         Jws<Claims> claims = Jwts.parser().setSigningKey(KEY).parseClaimsJws(hash);
-                        claims.getHeader();
-                        System.out.printf("::::"+claims.getHeader());
-                        if(url.contains("/app/usuario") || url.contains("/app/donante") || url.contains("/app/beneficiario") || url.contains("/app/donacion")){
+                        if(url.contains("/app/usuario") || url.contains("/app/donante") || url.contains("/app/beneficiario") || url.contains("/app/donacion") || url.contains("/api/verificar")){
                             chain.doFilter(request, response);
                         }
                     } catch (Exception e) {
