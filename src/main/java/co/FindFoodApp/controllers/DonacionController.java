@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/app")
 public class DonacionController {
 
@@ -42,14 +43,9 @@ public class DonacionController {
             throwError(error);
         }
         Map<String, String> respuesta = new HashMap<>();
-
-        DonacionModel donacionSave = this.donacionService.buscar(donacion);
-
-        if (donacionSave.getId() == null) {
-            this.donacionService.crear(donacionSave);
-            respuesta.put("mensaje", "Se resgistro la donacion No. "+donacionSave.getId()+" correctamente");
-        } else {
-            respuesta.put("mensaje", "La donacion No. "+donacionSave.getId()+" ya se encuentra registrado");
+        if (donacion.getId() == null) {
+            this.donacionService.crear(donacion);
+            respuesta.put("mensaje", "Se resgistro la donacion No. "+donacion.getId()+" correctamente");
         }
         return ResponseEntity.ok(respuesta);
     }
@@ -63,10 +59,10 @@ public class DonacionController {
         DonacionModel donacionSave = this.donacionService.buscar(donacion);
 
         if (donacionSave.getId() != null) {
-            this.donacionService.actualizar(donacionSave);
-            respuesta.put("mensaje", "Se actualizo la donacion No. "+donacionSave.getId()+" correctamente");
+            this.donacionService.actualizar(donacion);
+            respuesta.put("mensaje", "Se actualizo la donacion No. "+donacion.getId()+" correctamente");
         } else {
-            respuesta.put("mensaje", "La donacion No. "+donacionSave.getId()+" no se encuentra registrado");
+            respuesta.put("mensaje", "La donacion No. "+donacion.getId()+" no se encuentra registrado");
         }
         return ResponseEntity.ok(respuesta);
     }
@@ -105,8 +101,25 @@ public class DonacionController {
         return ResponseEntity.ok(respuesta);
     }
 
-    @GetMapping(value = "/donaciones/estado",params = "estado")
-    public ResponseEntity<Map<String, List<DonacionModel>>> listar(@RequestParam(defaultValue = "Disponible", required = true) String estado) {
+    @PutMapping("/donacion/finish")
+    public ResponseEntity<Map<String, String>> finalizar(@Valid @RequestBody DonacionModel donacion, Errors error) {
+        if (error.hasErrors()) {
+            throwError(error);
+        }
+        Map<String, String> respuesta = new HashMap<>();
+        DonacionModel donacionSave = this.donacionService.buscar(donacion);
+
+        if (donacionSave.getId() != null) {
+            this.donacionService.finalizarDonacion(donacion);
+            respuesta.put("mensaje", "Se finalizo la donacion No. "+donacionSave.getId()+" correctamente");
+        } else {
+            respuesta.put("mensaje", "La Donación No. "+donacionSave.getId()+" no existe");
+        }
+        return ResponseEntity.ok(respuesta);
+    }
+
+    @GetMapping(value = "/donacion",params = "estado")
+    public ResponseEntity<Map<String, List<DonacionModel>>> buscarEstado(@RequestParam(defaultValue = "Disponible", required = true) String estado) {
         Map<String, List<DonacionModel>> respuesta = new HashMap<>();
         respuesta.put("donaciones", this.donacionService.listarEstado(estado));
         return ResponseEntity.ok(respuesta);

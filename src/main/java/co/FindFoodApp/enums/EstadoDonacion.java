@@ -4,7 +4,8 @@ public enum EstadoDonacion {
 
     DISPONIBLE("1","Disponible"),
     SELECCIONADA("2","Seleccionada"),
-    FINALIZADA("3","Finalizada");
+    FINALIZADA("3","Finalizada"),
+    CANCELADA("4","Cancelada");
 
     private String codigo;
     private String nombre;

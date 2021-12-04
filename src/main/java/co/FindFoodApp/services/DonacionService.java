@@ -9,6 +9,8 @@ import co.FindFoodApp.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +41,7 @@ public class DonacionService {
      * @return Objeto DonacionModel
      */
     public DonacionModel buscar(DonacionModel donacion){
-        return this.donacionRepository.findById(donacion.getId()).get();
+        return this.donacionRepository.findById(donacion.getId()).orElse(new DonacionModel());
     }
 
     /**
@@ -61,6 +63,9 @@ public class DonacionService {
      * @param donacion Objeto DonacionModel
      */
     public void crear(DonacionModel donacion){
+        donacion.setFecha(new Date().toString());
+        donacion.setBeneficiario(null);
+        donacion.setEstado(EstadoDonacion.DISPONIBLE.getNombre());
         this.donacionRepository.save(donacion);
     }
 
@@ -69,6 +74,10 @@ public class DonacionService {
      * @param donacion Objeto DonacionModel
      */
     public void actualizar(DonacionModel donacion){
+        DonacionModel donacionSave = this.buscar(donacion);
+        donacion.setDonante(donacionSave.getDonante());
+        donacion.setBeneficiario(donacionSave.getBeneficiario());
+        donacion.setFecha(donacionSave.getFecha());
         this.donacionRepository.save(donacion);
     }
 
@@ -77,6 +86,10 @@ public class DonacionService {
      * @param donacion Objeto DonacionModel
      */
     public void borrar(DonacionModel donacion){
+        DonacionModel donacionModel = this.buscar(donacion);
+        if(donacionModel.getEstado().equals(EstadoDonacion.SELECCIONADA.getNombre())){
+            donacion.setEstado(EstadoDonacion.CANCELADA.getNombre());
+        }
         this.donacionRepository.delete(donacion);
     }
 
@@ -85,10 +98,23 @@ public class DonacionService {
      * @param donacion Objeto Donacion que incluye el beneficiario
      */
     public void seleccionarDonacion(DonacionModel donacion){
-        Optional<DonacionModel> donacionModel = this.donacionRepository.findById(donacion.getId());
-        if (donacionModel.get().getEstado().equals("Disponible")){
-            donacion.setEstado(EstadoDonacion.SELECCIONADA.getNombre());
-            this.donacionRepository.save(donacion);
+        DonacionModel donacionModel = this.buscar(donacion);
+        if (donacionModel.getEstado().equals(EstadoDonacion.DISPONIBLE.getNombre())){
+            donacionModel.setEstado(EstadoDonacion.SELECCIONADA.getNombre());
+            donacionModel.setBeneficiario(donacion.getBeneficiario());
+            this.donacionRepository.save(donacionModel);
+        }
+    }
+
+    /**
+     * Metodo que permite a un usuario beneficiario finalizar una donación seleccionada
+     * @param donacion Objeto Donacion que incluye el beneficiario
+     */
+    public void finalizarDonacion(DonacionModel donacion){
+        DonacionModel donacionModel = this.buscar(donacion);
+        if (donacionModel.getEstado().equals(EstadoDonacion.SELECCIONADA.getNombre())){
+            donacionModel.setEstado(EstadoDonacion.FINALIZADA.getNombre());
+            this.donacionRepository.save(donacionModel);
         }
     }
 
