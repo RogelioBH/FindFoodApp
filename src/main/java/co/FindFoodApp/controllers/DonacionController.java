@@ -31,10 +31,10 @@ public class DonacionController {
     DonacionService donacionService;
 
     @GetMapping("/donaciones")
-    public ResponseEntity<Map<String, List<DonacionModel>>> listar() {
-        Map<String, List<DonacionModel>> respuesta = new HashMap<>();
-        respuesta.put("donaciones", this.donacionService.listar());
-        return ResponseEntity.ok(respuesta);
+    public ResponseEntity<List<DonacionModel>> listar() {
+//        Map<String, List<DonacionModel>> respuesta = new HashMap<>();
+//        respuesta.put("donaciones", );
+        return ResponseEntity.ok(this.donacionService.listar());
     }
 
     @PostMapping("/donacion")
