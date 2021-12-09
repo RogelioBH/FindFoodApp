@@ -32,8 +32,6 @@ public class DonacionController {
 
     @GetMapping("/donaciones")
     public ResponseEntity<List<DonacionModel>> listar() {
-//        Map<String, List<DonacionModel>> respuesta = new HashMap<>();
-//        respuesta.put("donaciones", );
         return ResponseEntity.ok(this.donacionService.listar());
     }
 

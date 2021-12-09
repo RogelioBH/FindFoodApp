@@ -1,19 +1,22 @@
 package co.FindFoodApp.services;
 
 import co.FindFoodApp.enums.EstadoDonacion;
+import co.FindFoodApp.models.BeneficiarioModel;
 import co.FindFoodApp.models.DonacionModel;
 import co.FindFoodApp.models.DonanteModel;
 import co.FindFoodApp.models.UsuarioModel;
+import co.FindFoodApp.repositories.BeneficiarioRepository;
 import co.FindFoodApp.repositories.DonacionRepository;
+import co.FindFoodApp.repositories.DonanteRepository;
 import co.FindFoodApp.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class DonacionService {
@@ -27,12 +30,27 @@ public class DonacionService {
     @Autowired
     BeneficiarioService beneficiarioService;
 
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
     /**
      * Metodo que permite listar todos los donaciones creados en el sistema
      * @return Lista de donaciones.
      */
     public List<DonacionModel> listar(){
-        return this.donacionRepository.findAll();
+        List<DonacionModel> dataDonacion = new ArrayList<>();
+        for (DonacionModel donacion:this.donacionRepository.findAll()) {
+            DonanteModel donanteModel=donanteService.donanteRepository.findById(donacion.getDonante()).orElse(new DonanteModel());
+            BeneficiarioModel beneficiarioModel=beneficiarioService.beneficiarioRepository.findById(donacion.getBeneficiario() != null ? donacion.getBeneficiario():"000").orElse(new BeneficiarioModel());
+            DonacionModel donacionModel = new DonacionModel();
+            donacionModel.setId(donacion.getId());
+            donacionModel.setDonante(donanteModel.getNombre());
+            donacionModel.setBeneficiario(beneficiarioModel.getNombre());
+            donacionModel.setDescripcion(donacion.getDescripcion());
+            donacionModel.setFecha(donacion.getFecha());
+            donacionModel.setEstado(donacion.getEstado());
+            dataDonacion.add(donacionModel);
+        }
+        return dataDonacion;
     }
 
     /**
@@ -63,10 +81,15 @@ public class DonacionService {
      * @param donacion Objeto DonacionModel
      */
     public void crear(DonacionModel donacion){
-        donacion.setFecha(new Date().toString());
-        donacion.setBeneficiario(null);
-        donacion.setEstado(EstadoDonacion.DISPONIBLE.getNombre());
-        this.donacionRepository.save(donacion);
+        try {
+            donacion.setFecha(dtf.format(LocalDate.now()));
+            donacion.setBeneficiario(null);
+            donacion.setEstado(EstadoDonacion.DISPONIBLE.getNombre());
+            this.donacionRepository.save(donacion);
+        }catch (Exception e){
+            System.out.println("e = " + e);
+        }
+
     }
 
     /**

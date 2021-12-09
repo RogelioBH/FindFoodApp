@@ -3,16 +3,20 @@ package co.FindFoodApp.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.*;
+
 @Document(collection="donacion")
 public class DonacionModel {
 
     @Id
     private String id;
 
+    @NotEmpty(message = "No puede estar vacio.")
     private String donante;
     private String beneficiario;
 
     private String fecha;
+    @NotEmpty(message = "No puede estar vacio.")
     private String descripcion;
 
     // Disponible, Seleccionada, Finalizada

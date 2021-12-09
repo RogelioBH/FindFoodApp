@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/app")
 public class DonanteController {
 
@@ -25,13 +27,8 @@ public class DonanteController {
     DonanteService donanteService;
 
     @GetMapping("/donantes")
-    public ResponseEntity<Map<String, List<DonanteModel>>> listar(Errors error) {
-        if (error.hasErrors()) {
-            throwError(error);
-        }
-        Map<String, List<DonanteModel>> respuesta = new HashMap<>();
-        respuesta.put("donantes", this.donanteService.listar());
-        return ResponseEntity.ok(respuesta);
+    public ResponseEntity<List<DonanteModel>> listar() {
+        return ResponseEntity.ok(this.donanteService.listar());
     }
 
     private void throwError(Errors error) {

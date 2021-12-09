@@ -2,22 +2,20 @@ package co.FindFoodApp.controllers;
 
 import co.FindFoodApp.exceptions.CustomException;
 import co.FindFoodApp.models.BeneficiarioModel;
-import co.FindFoodApp.models.DonanteModel;
 import co.FindFoodApp.services.BeneficiarioService;
-import co.FindFoodApp.services.DonanteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/app")
 public class BeneficiarioController {
 
@@ -25,13 +23,8 @@ public class BeneficiarioController {
     BeneficiarioService beneficiarioService;
 
     @GetMapping("/beneficiarios")
-    public ResponseEntity<Map<String, List<BeneficiarioModel>>> listar(Errors error) {
-        if (error.hasErrors()) {
-            throwError(error);
-        }
-        Map<String, List<BeneficiarioModel>> respuesta = new HashMap<>();
-        respuesta.put("donantes", this.beneficiarioService.listar());
-        return ResponseEntity.ok(respuesta);
+    public ResponseEntity<List<BeneficiarioModel>> listar() {
+        return ResponseEntity.ok(this.beneficiarioService.listar());
     }
 
     private void throwError(Errors error) {
