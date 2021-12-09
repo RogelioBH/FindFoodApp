@@ -3,18 +3,24 @@ package co.FindFoodApp.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotEmpty;
+
 @Document(collection="usuario")
 public class UsuarioModel {
 
     @Id
     private String id;
-
+    @NotEmpty(message = "No puede estar vacio.")
     private String nombre;
+    @NotEmpty(message = "No puede estar vacio.")
     private String correo;
+    @NotEmpty(message = "No puede estar vacio.")
     private String telefono;
+    @NotEmpty(message = "No puede estar vacio.")
     private String username;
     private String password;
     private String hash;
+    @NotEmpty(message = "No puede estar vacio.")
     private String rol;
 
     public UsuarioModel() {

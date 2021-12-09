@@ -30,10 +30,8 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @GetMapping("/usuarios")
-    public ResponseEntity<Map<String, List<UsuarioModel>>> listar() {
-        Map<String, List<UsuarioModel>> respuesta = new HashMap<>();
-        respuesta.put("usuarios", this.usuarioService.listar());
-        return ResponseEntity.ok(respuesta);
+    public ResponseEntity<List<UsuarioModel>> listar() {
+        return ResponseEntity.ok(this.usuarioService.listar());
     }
 
     @PostMapping("/user")
@@ -74,13 +72,13 @@ public class UsuarioController {
         return ResponseEntity.ok(respuesta);
     }
 
-    @DeleteMapping("/usuario")
-    public ResponseEntity<Map<String, String>> borrar(@Valid @RequestBody UsuarioModel usuario, Errors error) {
-        if (error.hasErrors()) {
-            throwError(error);
-        }
+    @DeleteMapping(value = "/usuario/{username}")
+    public ResponseEntity<Map<String, String>> borrar(@Valid @PathVariable(name = "username",required = true) String username) {
+//        if (error.hasErrors()) {
+//            throwError(error);
+//        }
         Map<String, String> respuesta = new HashMap<>();
-        UsuarioModel usuarioSave = this.usuarioService.buscarPorNombreUsuario(usuario.getUsername());
+        UsuarioModel usuarioSave = this.usuarioService.buscarPorNombreUsuario(username);
 
         if (usuarioSave.getId() != null) {
             this.usuarioService.borrar(usuarioSave);
@@ -97,12 +95,10 @@ public class UsuarioController {
         if(usuarioModel.getUsername()==null){
             throw new CustomException("Usuario o contraseña incorrectos");
         }
-
         if(!BCrypt.checkpw(usuario.getPassword(), usuarioModel.getPassword())){
             throw new CustomException("Usuario o contraseña incorrectos");
         }
         return ResponseEntity.ok(new Autentication().autenticacion(usuarioModel));
-
     }
 
     private void throwError(Errors error) {
